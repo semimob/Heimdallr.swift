@@ -40,6 +40,9 @@ public let HeimdallrErrorNotAuthorized = 2
         return accessToken != nil
     }
 
+    /// Filters authorization parameters before sending
+    public var grantParametersFilter: (([String: String]) -> [String: String])?
+    
     private var requestQueue = DispatchQueue(label: "com.trivago.Heimdallr.requestQueue", attributes: [])
 
     /// Initializes a new client.
@@ -135,6 +138,7 @@ public let HeimdallrErrorNotAuthorized = 2
                 parameters["client_id"] = credentials.id
             }
         }
+        parameters = self.grantParametersFilter?(parameters) ?? parameters
 
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
